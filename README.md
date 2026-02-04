@@ -1,11 +1,11 @@
-# Codex Waybar Module
+# AI Limits Waybar Module
 
-Custom Waybar module that shows Codex daily + weekly usage from your local Codex auth.
+Single Waybar widget that shows Codex (daily/weekly) and Claude (session/weekly) limits.
 
 ## Files
-- `codexbar.py`: Script that outputs Waybar JSON.
-- `waybar/codexbar.jsonc`: Config fragment for the module.
-- `waybar/codexbar.css`: Style fragment.
+- `limitsbar.py`: Combined script that outputs Waybar JSON.
+- `waybar/ai-limits.jsonc`: Config fragment for the module.
+- `waybar/ai-limits.css`: Style fragment.
 - `load.sh`: Installs the script and auto-merges Waybar config/styles safely.
 
 ## Install
@@ -14,9 +14,9 @@ Custom Waybar module that shows Codex daily + weekly usage from your local Codex
 ```
 
 The installer will:
-- Copy the script into `~/.config/waybar/scripts/codexbar.py`
+- Copy the script into `~/.config/waybar/scripts/limitsbar.py`
 - Drop config/style fragments into `~/.config/waybar/`
-- Insert `custom/codex` into your Waybar config without reformatting it
+- Insert `custom/ai-limits` into your Waybar config without reformatting it
 - Append styles if missing
 
 Then reload Waybar:
@@ -27,5 +27,8 @@ systemctl --user restart waybar
 ```
 
 ## Notes
-- Requires `~/.codex/auth.json` from `codex login`.
-- Refreshes the OAuth token if `last_refresh` is older than 8 days.
+- Codex requires `~/.codex/auth.json` from `codex login`.
+- Claude requires `~/.claude/.credentials.json` with `user:profile` scope from `claude login`.
+- Claude usage is fetched via `https://api.anthropic.com/api/oauth/usage` using the CLI OAuth token.
+- Codex usage defaults to `https://chatgpt.com/backend-api/wham/usage` 
+

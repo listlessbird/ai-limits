@@ -1,22 +1,22 @@
-#custom-codex {
+#custom-ai-limits {
   padding: 0 10px;
   margin: 0 6px;
   font-weight: 600;
   letter-spacing: 0.3px;
 }
 
-#custom-codex.ok {
+#custom-ai-limits.ok {
   color: #8fbcbb;
 }
 
-#custom-codex.warn {
+#custom-ai-limits.warn {
   color: #ebcb8b;
 }
 
-#custom-codex.critical {
+#custom-ai-limits.critical {
   color: #bf616a;
 }
 
-#custom-codex.error {
+#custom-ai-limits.error {
   color: #d08770;
 }

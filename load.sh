@@ -13,11 +13,11 @@ WAYBAR_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/waybar"
 SCRIPT_DIR="$WAYBAR_DIR/scripts"
 
 mkdir -p "$SCRIPT_DIR"
-install -m 755 "$PROJECT_DIR/codexbar.py" "$SCRIPT_DIR/codexbar.py"
+install -m 755 "$PROJECT_DIR/limitsbar.py" "$SCRIPT_DIR/limitsbar.py"
 
 # Drop config/style fragments to merge manually or via markers.
-install -m 644 "$PROJECT_DIR/waybar/codexbar.jsonc" "$WAYBAR_DIR/codexbar.jsonc"
-install -m 644 "$PROJECT_DIR/waybar/codexbar.css" "$WAYBAR_DIR/codexbar.css"
+install -m 644 "$PROJECT_DIR/waybar/ai-limits.jsonc" "$WAYBAR_DIR/ai-limits.jsonc"
+install -m 644 "$PROJECT_DIR/waybar/ai-limits.css" "$WAYBAR_DIR/ai-limits.css"
 
 CONFIG_CANDIDATES=("$WAYBAR_DIR/config" "$WAYBAR_DIR/config.jsonc" "$WAYBAR_DIR/config.json")
 STYLE_CANDIDATES=("$WAYBAR_DIR/style.css")
@@ -38,9 +38,9 @@ for f in "${STYLE_CANDIDATES[@]}"; do
   fi
 done
 
-echo "Installed codexbar script to: $SCRIPT_DIR/codexbar.py"
-echo "Config fragment: $WAYBAR_DIR/codexbar.jsonc"
-echo "Style fragment:  $WAYBAR_DIR/codexbar.css"
+echo "Installed limitsbar script to: $SCRIPT_DIR/limitsbar.py"
+echo "Config fragment: $WAYBAR_DIR/ai-limits.jsonc"
+echo "Style fragment:  $WAYBAR_DIR/ai-limits.css"
 
 if [[ -n "$CONFIG_FILE" ]]; then
   echo "Detected Waybar config: $CONFIG_FILE"
@@ -54,17 +54,17 @@ from pathlib import Path
 config_path = Path(sys.argv[1])
 raw = config_path.read_text(encoding="utf-8")
 
-if "custom/codex" in raw:
-    print("custom/codex already present in config; no merge needed.")
+if "custom/ai-limits" in raw:
+    print("custom/ai-limits already present in config; no merge needed.")
     raise SystemExit(0)
 
 module_block = (
-    '  "custom/codex": {\n'
-    '    "exec": "~/.config/waybar/scripts/codexbar.py",\n'
+    '  "custom/ai-limits": {\n'
+    '    "exec": "~/.config/waybar/scripts/limitsbar.py",\n'
     '    "return-type": "json",\n'
     '    "interval": 300,\n'
     '    "format": "{icon} {text}",\n'
-    '    "format-icons": ["󰄬", "󰄭", "󰄮", "󰄯", "󰄰"],\n'
+    '    "format-icons": ["󱡠", "󱡡", "󱡢", "󱡣", "󱡤"],\n'
     '    "tooltip": true\n'
     '  }\n'
 )
@@ -73,7 +73,7 @@ module_block = (
 trimmed = raw.rstrip()
 last_brace = trimmed.rfind('}')
 if last_brace == -1:
-    print("Failed to find top-level closing brace. Please merge codexbar.jsonc manually.")
+    print("Failed to find top-level closing brace. Please merge ai-limits.jsonc manually.")
     raise SystemExit(2)
 
 # Ensure a trailing comma before inserting
@@ -117,7 +117,10 @@ if match:
 
     if end is not None:
         array_body = merged[start:end]
-        if "custom/codex" not in array_body:
+        if "custom/codex" in array_body:
+            array_body = array_body.replace("custom/codex", "custom/ai-limits")
+            merged = merged[:start] + array_body + merged[end:]
+        elif "custom/ai-limits" not in array_body:
             # Determine indentation from existing entries
             lines = array_body.splitlines()
             indent = "  "
@@ -125,7 +128,7 @@ if match:
                 if line.strip().startswith('"'):
                     indent = re.match(r'(\s*)', line).group(1)
                     break
-            insertion = ("\n" if array_body.strip() else "") + f"{indent}\"custom/codex\""
+            insertion = ("\n" if array_body.strip() else "") + f"{indent}\"custom/ai-limits\""
             # Add comma if needed before closing
             body_trim = array_body.rstrip()
             if body_trim and not body_trim.rstrip().endswith(','):
@@ -141,18 +144,18 @@ config_path.write_text(merged + ("\n" if not merged.endswith("\n") else ""), enc
 print(f"Updated {config_path} (backup: {backup.name})")
 PY
 else
-  echo "No Waybar config detected. Create one and merge codexbar.jsonc."
+  echo "No Waybar config detected. Create one and merge ai-limits.jsonc."
 fi
 
 if [[ -n "$STYLE_FILE" ]]; then
   echo "Detected Waybar style: $STYLE_FILE"
-  if ! grep -q "#custom-codex" "$STYLE_FILE"; then
-    printf "\n%s\n" "$(cat "$WAYBAR_DIR/codexbar.css")" >> "$STYLE_FILE"
-    echo "Appended Codex styles to $STYLE_FILE"
+  if ! grep -q "#custom-ai-limits" "$STYLE_FILE"; then
+    printf "\n%s\n" "$(cat "$WAYBAR_DIR/ai-limits.css")" >> "$STYLE_FILE"
+    echo "Appended AI limits styles to $STYLE_FILE"
   else
-    echo "Codex styles already present in $STYLE_FILE"
+    echo "AI limits styles already present in $STYLE_FILE"
   fi
 else
-  echo "No style.css detected. Create one and add codexbar.css contents."
+  echo "No style.css detected. Create one and add ai-limits.css contents."
 fi
 
