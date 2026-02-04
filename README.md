@@ -1,6 +1,6 @@
 # AI Limits Waybar Module
 
-Single Waybar widget that shows Codex (daily/weekly) and Claude (session/weekly) limits.
+Single Waybar widget that shows Codex (5‑hour + weekly) and Claude (5‑hour + weekly) limits.
 
 ## Files
 - `limitsbar.py`: Combined script that outputs Waybar JSON.
@@ -30,5 +30,4 @@ systemctl --user restart waybar
 - Codex requires `~/.codex/auth.json` from `codex login`.
 - Claude requires `~/.claude/.credentials.json` with `user:profile` scope from `claude login`.
 - Claude usage is fetched via `https://api.anthropic.com/api/oauth/usage` using the CLI OAuth token.
-- Codex usage defaults to `https://chatgpt.com/backend-api/wham/usage` 
-
+- Codex usage defaults to `https://chatgpt.com/backend-api/wham/usage`
