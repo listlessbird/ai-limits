@@ -1,0 +1,22 @@
+#custom-codex {
+  padding: 0 10px;
+  margin: 0 6px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+#custom-codex.ok {
+  color: #8fbcbb;
+}
+
+#custom-codex.warn {
+  color: #ebcb8b;
+}
+
+#custom-codex.critical {
+  color: #bf616a;
+}
+
+#custom-codex.error {
+  color: #d08770;
+}

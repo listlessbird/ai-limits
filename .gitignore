@@ -1,0 +1,10 @@
+# Secrets / tokens
+*auth*.json
+*.token
+*.log
+
+# Local caches
+.cache/
+
+# Waybar backups
+waybar/*.bak.*

@@ -1,0 +1,9 @@
+// Add this module to your Waybar config
+"custom/codex": {
+  "exec": "~/.config/waybar/scripts/codexbar.py",
+  "return-type": "json",
+  "interval": 300,
+  "format": "{icon} {text}",
+  "format-icons": ["󰄬", "󰄭", "󰄮", "󰄯", "󰄰"],
+  "tooltip": true
+}
