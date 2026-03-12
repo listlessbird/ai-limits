@@ -1,9 +1,50 @@
-// Add this module to your Waybar config
-"custom/ai-limits": {
-  "exec": "~/.config/waybar/scripts/limitsbar.py",
+// Add these two modules to your Waybar config, e.g. in "modules-right"
+// Place the icon SVGs in ~/.config/waybar/icons/ (see waybar/icons/)
+
+"custom/codex-limits": {
+  "exec": "~/.config/waybar/scripts/limitsbar.py codex",
   "return-type": "json",
   "interval": 300,
-  "format": "{icon} {text}",
-  "format-icons": ["󱡠", "󱡡", "󱡢", "󱡣", "󱡤"],
-  "tooltip": true
-}
+  "format": "{text}",
+  "tooltip": true,
+  "markup": true
+},
+
+"custom/claude-limits": {
+  "exec": "~/.config/waybar/scripts/limitsbar.py claude",
+  "return-type": "json",
+  "interval": 300,
+  "format": "{text}",
+  "tooltip": true,
+  "markup": true
+},
+
+// ─── CSS to add to your style.css ────────────────────────────────────────────
+//
+// #custom-codex-limits,
+// #custom-claude-limits {
+//   padding-left: 24px;
+//   background-position: left center;
+//   background-repeat: no-repeat;
+//   background-size: 16px;
+// }
+//
+// #custom-codex-limits {
+//   background-image: url('/home/USER/.config/waybar/icons/openai.svg');
+// }
+//
+// #custom-claude-limits {
+//   background-image: url('/home/USER/.config/waybar/icons/claude.svg');
+// }
+//
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Legacy combined module (no SVG icon, uses Bootstrap Icons font inline):
+// "custom/ai-limits": {
+//   "exec": "~/.config/waybar/scripts/limitsbar.py",
+//   "return-type": "json",
+//   "interval": 300,
+//   "format": "{text}",
+//   "tooltip": true,
+//   "markup": true
+// }
