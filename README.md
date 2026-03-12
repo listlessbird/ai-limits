@@ -1,5 +1,7 @@
 # AI Limits Waybar Module
 
+![Waybar module preview](assets/shot.png)
+
 Single Waybar widget that shows Codex (5‑hour + weekly) and Claude (5‑hour + weekly) limits.
 
 ## Files

@@ -19,6 +19,9 @@ ICON_UNAVAILABLE = "󰅚"
 ICON_CLAUDE = '<span font="bootstrap-icons">\uf914</span>'
 ICON_OPENAI = '<span font="bootstrap-icons">\uf915</span>'
 
+BRAND_COLOR_CLAUDE = "#da7756"
+BRAND_COLOR_OPENAI = "#ffffff"
+
 
 def _now_utc():
     return datetime.datetime.now(datetime.timezone.utc)
@@ -135,14 +138,6 @@ def _format_reset_dt(dt):
     return _format_reset(ts), _format_eta(ts)
 
 
-_CLASS_COLORS = {
-    "ok": "#8fbcbb",
-    "warn": "#ebcb8b",
-    "critical": "#bf616a",
-    "unknown": "#d08770",
-}
-
-
 def _class_for(percent):
     if percent is None:
         return "unknown"
@@ -153,8 +148,7 @@ def _class_for(percent):
     return "ok"
 
 
-def _color_span(text, cls):
-    color = _CLASS_COLORS.get(cls, _CLASS_COLORS["unknown"])
+def _brand_span(text, color):
     return f'<span foreground="{color}">{text}</span>'
 
 
@@ -307,7 +301,7 @@ def _build_codex_payload(codex, codex_err):
         d_text = "--" if d is None else f"{int(d)}%"
         w_text = "--" if w is None else f"{int(w)}%"
         cls = _class_for(max((v for v in [d, w] if v is not None), default=None))
-        text = _color_span(f"{ICON_FIVE_HOUR} {d_text} {ICON_WEEKLY} {w_text}", cls)
+        text = _brand_span(f"{ICON_FIVE_HOUR} {d_text} {ICON_WEEKLY} {w_text}", BRAND_COLOR_OPENAI)
         tooltip_lines.append(
             f"5h: {d_text} (resets {_format_reset(codex.get('daily_reset'))}, {_format_eta(codex.get('daily_reset'))})"
         )
@@ -337,7 +331,7 @@ def _build_claude_payload(claude, claude_err):
         s_text = "--" if s is None else f"{int(s)}%"
         w_text = "--" if w is None else f"{int(w)}%"
         cls = _class_for(max((v for v in [s, w] if v is not None), default=None))
-        text = _color_span(f"{ICON_FIVE_HOUR} {s_text} {ICON_WEEKLY} {w_text}", cls)
+        text = _brand_span(f"{ICON_FIVE_HOUR} {s_text} {ICON_WEEKLY} {w_text}", BRAND_COLOR_CLAUDE)
         s_reset, s_eta = _format_reset_dt(claude.get("session_reset"))
         w_reset, w_eta = _format_reset_dt(claude.get("week_reset"))
         tooltip_lines.append(f"5h: {s_text} (resets {s_reset}, {s_eta})")
@@ -374,7 +368,7 @@ def main():
         d_text = "--" if d is None else f"{int(d)}%"
         w_text = "--" if w is None else f"{int(w)}%"
         cls = _class_for(max((v for v in [d, w] if v is not None), default=None))
-        parts.append(_color_span(f"{ICON_OPENAI} {ICON_FIVE_HOUR} {d_text} {ICON_WEEKLY} {w_text}", cls))
+        parts.append(_brand_span(f"{ICON_OPENAI} {ICON_FIVE_HOUR} {d_text} {ICON_WEEKLY} {w_text}", BRAND_COLOR_OPENAI))
         tooltip_lines += [f"Codex — 5h: {d_text} (resets {_format_reset(codex.get('daily_reset'))}, {_format_eta(codex.get('daily_reset'))})", f"Codex — Weekly: {w_text} (resets {_format_reset(codex.get('weekly_reset'))}, {_format_eta(codex.get('weekly_reset'))})"]
     if claude:
         s, w = claude.get("session_percent"), claude.get("week_percent")
@@ -382,7 +376,7 @@ def main():
         s_text = "--" if s is None else f"{int(s)}%"
         w_text = "--" if w is None else f"{int(w)}%"
         cls = _class_for(max((v for v in [s, w] if v is not None), default=None))
-        parts.append(_color_span(f"{ICON_CLAUDE} {ICON_FIVE_HOUR} {s_text} {ICON_WEEKLY} {w_text}", cls))
+        parts.append(_brand_span(f"{ICON_CLAUDE} {ICON_FIVE_HOUR} {s_text} {ICON_WEEKLY} {w_text}", BRAND_COLOR_CLAUDE))
         s_reset, s_eta = _format_reset_dt(claude.get("session_reset"))
         w_reset, w_eta = _format_reset_dt(claude.get("week_reset"))
         tooltip_lines += ["", f"Claude — 5h: {s_text} (resets {s_reset}, {s_eta})", f"Claude — Weekly: {w_text} (resets {w_reset}, {w_eta})"]
