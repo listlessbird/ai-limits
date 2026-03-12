@@ -4,28 +4,30 @@
 
 Single Waybar widget that shows Codex (5‑hour + weekly) and Claude (5‑hour + weekly) limits.
 
-## Files
-- `limitsbar.py`: Combined script that outputs Waybar JSON.
-- `waybar/ai-limits.jsonc`: Config fragment for the module.
-- `waybar/ai-limits.css`: Style fragment.
-- `load.sh`: Installs the script and auto-merges Waybar config/styles safely.
-
 ## Install
 ```bash
-./load.sh
+python install.py
+```
+
+Preview without writing anything:
+```bash
+python install.py --dry-run
+```
+
+Uninstall:
+```bash
+python install.py --uninstall
 ```
 
 The installer will:
-- Copy the script into `~/.config/waybar/scripts/limitsbar.py`
-- Drop config/style fragments into `~/.config/waybar/`
-- Insert `custom/ai-limits` into your Waybar config without reformatting it
-- Append styles if missing
+- Copy `limitsbar.py` to `~/.config/waybar/scripts/limitsbar.py`
+- Copy SVG icons to `~/.config/waybar/icons/`
+- Inject `custom/codex-limits` and `custom/claude-limits` module definitions into your Waybar config
+- Append styles to `style.css` if missing
 
 Then reload Waybar:
 ```bash
-pkill -SIGUSR2 waybar
-# or
-systemctl --user restart waybar
+killall -SIGUSR2 waybar
 ```
 
 ## Notes

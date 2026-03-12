@@ -14,7 +14,6 @@ REFRESH_CLIENT_ID = "app_EMoamEEZ73f0CkXaXp7hrann"
 
 ICON_FIVE_HOUR = "󱦟"
 ICON_WEEKLY = "󰃮"
-ICON_UNAVAILABLE = "󰅚"
 
 ICON_CLAUDE = '<span font="bootstrap-icons">\uf914</span>'
 ICON_OPENAI = '<span font="bootstrap-icons">\uf915</span>'
@@ -345,49 +344,17 @@ def _build_claude_payload(claude, claude_err):
 
 
 def main():
-    service = sys.argv[1] if len(sys.argv) > 1 else "all"
+    service = sys.argv[1] if len(sys.argv) > 1 else ""
 
     if service == "codex":
         codex, codex_err = _get_codex_status()
         _emit(_build_codex_payload(codex, codex_err))
-        return
-
-    if service == "claude":
+    elif service == "claude":
         claude, claude_err = _get_claude_status()
         _emit(_build_claude_payload(claude, claude_err))
-        return
-
-    # Legacy combined mode (no argument)
-    codex, codex_err = _get_codex_status()
-    claude, claude_err = _get_claude_status()
-    parts, percents, tooltip_lines = [], [], ["AI Limits", ""]
-
-    if codex:
-        d, w = codex.get("daily_percent"), codex.get("weekly_percent")
-        percents += [v for v in [d, w] if v is not None]
-        d_text = "--" if d is None else f"{int(d)}%"
-        w_text = "--" if w is None else f"{int(w)}%"
-        cls = _class_for(max((v for v in [d, w] if v is not None), default=None))
-        parts.append(_brand_span(f"{ICON_OPENAI} {ICON_FIVE_HOUR} {d_text} {ICON_WEEKLY} {w_text}", BRAND_COLOR_OPENAI))
-        tooltip_lines += [f"Codex — 5h: {d_text} (resets {_format_reset(codex.get('daily_reset'))}, {_format_eta(codex.get('daily_reset'))})", f"Codex — Weekly: {w_text} (resets {_format_reset(codex.get('weekly_reset'))}, {_format_eta(codex.get('weekly_reset'))})"]
-    if claude:
-        s, w = claude.get("session_percent"), claude.get("week_percent")
-        percents += [v for v in [s, w] if v is not None]
-        s_text = "--" if s is None else f"{int(s)}%"
-        w_text = "--" if w is None else f"{int(w)}%"
-        cls = _class_for(max((v for v in [s, w] if v is not None), default=None))
-        parts.append(_brand_span(f"{ICON_CLAUDE} {ICON_FIVE_HOUR} {s_text} {ICON_WEEKLY} {w_text}", BRAND_COLOR_CLAUDE))
-        s_reset, s_eta = _format_reset_dt(claude.get("session_reset"))
-        w_reset, w_eta = _format_reset_dt(claude.get("week_reset"))
-        tooltip_lines += ["", f"Claude — 5h: {s_text} (resets {s_reset}, {s_eta})", f"Claude — Weekly: {w_text} (resets {w_reset}, {w_eta})"]
-
-    if not parts:
-        _emit({"text": ""})
-        return
-
-    tooltip_lines += ["", f"Updated: {_now_utc().astimezone().strftime('%Y-%m-%d %H:%M')}", "Refresh: every 5 minutes"]
-    top_percent = max(percents) if percents else None
-    _emit({"text": "  |  ".join(parts), "tooltip": "\r".join(tooltip_lines), "class": _class_for(top_percent), "percentage": int(top_percent) if top_percent is not None else 0, "alt": "ai-limits"})
+    else:
+        print(f"Usage: {sys.argv[0]} codex|claude", file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
